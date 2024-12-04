@@ -24,6 +24,12 @@ URL in `$1`.
 $ ght
 Usage: ght "https://google.com/"
 ```
+exec
+```bash
+$ ght "https://google.com/"
+Google
+```
+Done!
 
 ### for example
 If you have a file called `urls` with URLs listed.
