@@ -13,7 +13,7 @@ go build -o ght main.go
 ```
 Move the executable binary to `/usr/local/bin` to work with CLI.
 ```bash
-sudo mv ght /usr/local/bin
+sudo mv ght /usr/local/bin/
 sudo chown root:root /usr/local/bin/ght
 which ght
 ```
