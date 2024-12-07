@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Set up Go
-      uses: http://github.com/actions/setup-go@v4
+      uses: git@github.com/actions/setup-go@v4
       with:
         go-version: '1.23.3'
 
