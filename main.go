@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"ght/chardet"
+
 	"golang.org/x/net/html"
 )
 
@@ -39,7 +41,13 @@ func fetchAndParse(client *http.Client, url string, useRange bool) (string, erro
 	}
 	defer resp.Body.Close()
 
-	doc, err := html.Parse(resp.Body)
+	// encoding and decode
+	body, err := chardet.DetectAndDecode(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to decode response body: %w", err)
+	}
+
+	doc, err := html.Parse(body)
 	if err != nil {
 		return "", fmt.Errorf("failed to parse HTML: %w", err)
 	}
@@ -64,7 +72,7 @@ func fetchTitle(url string) (string, error) {
 		return title, nil
 	}
 
-	// no range limit : get reqest
+	// no range limit : get request
 	title, err = fetchAndParse(client, url, false)
 	if err != nil {
 		return "", err
