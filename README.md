@@ -22,7 +22,9 @@ which ght
 URL in `$1`.
 ```bash
 $ ght
-Usage: ght "https://google.com/"
+Usage: ght [options] <URL>
+Options:
+  -m    Output the URL in Markdown format
 ```
 exec
 ```bash
