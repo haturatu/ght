@@ -6,6 +6,9 @@ name: Go
 on:
   push:
     branches: [ "dev" ]
+    path-ignore:
+      - '**/README'
+
   pull_request:
     branches: [ "dev" ]
 
