@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -85,17 +86,32 @@ func fetchTitle(url string) (string, error) {
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "Usage: ght \"https://google.com/\"")
+	markdown := flag.Bool("m", false, "Output the URL in Markdown format")
+
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options] <URL>\n", os.Args[0])
+		fmt.Fprintln(os.Stderr, "Options:")
+		flag.PrintDefaults()
+	}
+
+	flag.Parse()
+
+	if flag.NArg() < 1 {
+		flag.Usage()
 		os.Exit(1)
 	}
 
-	url := os.Args[1]
+	url := flag.Arg(0)
 	title, err := fetchTitle(url)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(2)
 	}
 
-	fmt.Printf("%s\n", title)
+	// output md
+	if *markdown {
+		fmt.Printf("[%s](%s)\n", title, url)
+	} else {
+		fmt.Printf("%s\n", title)
+	}
 }
