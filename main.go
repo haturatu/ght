@@ -7,23 +7,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/alecthomas/kingpin/v2"
+	"github.com/akamensky/argparse"
 	"github.com/atotto/clipboard"
 	"ght/chardet"
 
 	"golang.org/x/net/html"
 )
-
-var (
-	app        = kingpin.New("ght", "Get HTML Title")
-	urlArg     = app.Arg("url", "URL to fetch").Required().String()
-	markdown   = app.Flag("markdown", "Output in Markdown format").Short('m').Bool()
-	copyClip   = app.Flag("copy", "Copy to clipboard").Short('c').Bool()
-)
-
-func init() {
-    app.HelpFlag.Short('h')
-}
 
 func findTitleTag(n *html.Node) string {
 	if n.Type == html.ElementNode && n.Data == "title" {
@@ -99,8 +88,28 @@ func fetchTitle(url string) (string, error) {
 
 func main() {
 	// Parse command line arguments
-	kingpin.MustParse(app.Parse(os.Args[1:]))
+	parser := argparse.NewParser("ght", "Get HTML Title")
 
+	urlArg := parser.String("", "url", &argparse.Options{
+		Required: true,
+		Help:     "URL to fetch",
+	})
+
+	markdown := parser.Flag("m", "markdown", &argparse.Options{
+		Help: "Output in Markdown format",
+	})
+
+	copyClip := parser.Flag("c", "copy", &argparse.Options{
+		Help: "Copy to clipboard",
+	})
+
+	err := parser.Parse(os.Args)
+	if err != nil {
+		fmt.Fprint(os.Stderr, parser.Usage(err))
+		os.Exit(1)
+	}
+
+	// Validate URL
 	title, err := fetchTitle(*urlArg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
