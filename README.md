@@ -6,6 +6,12 @@ Please check if the Go path is running.
 ```bash
 which go
 ```
+
+requirements:
+```bash
+go get github.com/atotto/clipboard
+go get github.com/akamensky/argparse
+```
   
 And then compile.
 ```bash
