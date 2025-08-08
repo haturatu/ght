@@ -22,18 +22,18 @@ which ght
 URL in `$1`.
 ```bash
 $ ght
-usage: ght [<flags>] <url>
+[--url] is required
+usage: ght [-h|--help] --url "<value>" [-m|--markdown] [-c|--copy]
 
-Get HTML Title
+           Get HTML Title
 
+Arguments:
 
-Flags:
-  -h, --[no-]help      Show context-sensitive help (also try --help-long and --help-man).
-  -m, --[no-]markdown  Output in Markdown format
-  -c, --[no-]copy      Copy to clipboard
+  -h  --help      Print help information
+      --url       URL to fetch
+  -m  --markdown  Output in Markdown format
+  -c  --copy      Copy to clipboard
 
-Args:
-  <url>  URL to fetch
 ```
 exec
 ```bash
