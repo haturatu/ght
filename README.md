@@ -22,9 +22,18 @@ which ght
 URL in `$1`.
 ```bash
 $ ght
-Usage: ght [options] <URL>
-Options:
-  -m    Output the URL in Markdown format
+usage: ght [<flags>] <url>
+
+Get HTML Title
+
+
+Flags:
+  -h, --[no-]help      Show context-sensitive help (also try --help-long and --help-man).
+  -m, --[no-]markdown  Output in Markdown format
+  -c, --[no-]copy      Copy to clipboard
+
+Args:
+  <url>  URL to fetch
 ```
 exec
 ```bash
