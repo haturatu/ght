@@ -2,16 +2,28 @@ package main
 
 import (
 	"crypto/tls"
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/alecthomas/kingpin/v2"
+	"github.com/atotto/clipboard"
 	"ght/chardet"
 
 	"golang.org/x/net/html"
 )
+
+var (
+	app        = kingpin.New("ght", "Get HTML Title")
+	urlArg     = app.Arg("url", "URL to fetch").Required().String()
+	markdown   = app.Flag("markdown", "Output in Markdown format").Short('m').Bool()
+	copyClip   = app.Flag("copy", "Copy to clipboard").Short('c').Bool()
+)
+
+func init() {
+    app.HelpFlag.Short('h')
+}
 
 func findTitleTag(n *html.Node) string {
 	if n.Type == html.ElementNode && n.Data == "title" {
@@ -86,32 +98,30 @@ func fetchTitle(url string) (string, error) {
 }
 
 func main() {
-	markdown := flag.Bool("m", false, "Output the URL in Markdown format")
+	// Parse command line arguments
+	kingpin.MustParse(app.Parse(os.Args[1:]))
 
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options] <URL>\n", os.Args[0])
-		fmt.Fprintln(os.Stderr, "Options:")
-		flag.PrintDefaults()
-	}
-
-	flag.Parse()
-
-	if flag.NArg() < 1 {
-		flag.Usage()
-		os.Exit(1)
-	}
-
-	url := flag.Arg(0)
-	title, err := fetchTitle(url)
+	title, err := fetchTitle(*urlArg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(2)
 	}
 
 	// output md
+	var output string
 	if *markdown {
-		fmt.Printf("[%s](%s)\n", title, url)
+		output = fmt.Sprintf("[%s](%s)", title, *urlArg)
 	} else {
-		fmt.Printf("%s\n", title)
+		output = title
+	}
+
+	fmt.Println(output)
+
+	if *copyClip {
+		err := clipboard.WriteAll(output)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error copying to clipboard: %v\n", err)
+			os.Exit(3)
+		}
 	}
 }
