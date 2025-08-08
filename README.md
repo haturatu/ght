@@ -40,6 +40,12 @@ exec
 $ ght "https://google.com/"
 Google
 ```
+Copy to clipboard
+```bash
+$ ght -mc "https://google.com/"
+[Google](https://google.com/)
+```
+
 Done!
 
 ### for example
