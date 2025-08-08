@@ -1,5 +1,5 @@
 # ght
-go-http-title  
+get-http-title  
 
 ## Build
 Please check if the Go path is running.
