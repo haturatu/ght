@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
+	"ght/chardet"
 	"github.com/akamensky/argparse"
 	"github.com/atotto/clipboard"
-	"ght/chardet"
 
 	"golang.org/x/net/html"
 )
@@ -90,9 +90,19 @@ func main() {
 	// Parse command line arguments
 	parser := argparse.NewParser("ght", "Get HTML Title")
 
-	urlArg := parser.String("", "url", &argparse.Options{
-		Required: true,
-		Help:     "URL to fetch",
+	// --url option
+	// This option is for specifying the URL to fetch
+	urlOpt := parser.String("u", "url", &argparse.Options{
+		Help: "URL to fetch",
+	})
+
+	// URL positional argument
+	// This positional argument is for specifying the URL if not provided with --url option
+	// It will not show up in the help message
+	// Hidden feature: DISABLEDDESCRIPTIONWILLNOTSHOWUP
+	// https://github.com/akamensky/argparse/issues/113
+	urlPos := parser.StringPositional(&argparse.Options{
+		Help: "DISABLEDDESCRIPTIONWILLNOTSHOWUP",
 	})
 
 	markdown := parser.Flag("m", "markdown", &argparse.Options{
@@ -109,8 +119,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	var url string
+	if urlOpt != nil && *urlOpt != "" {
+		url = *urlOpt
+	} else if urlPos != nil && *urlPos != "" {
+		url = *urlPos
+	} else {
+		fmt.Fprint(os.Stderr, "Error: URL is required\n")
+		// print like curl
+		fmt.Fprintf(os.Stderr, "Example: %s [options...] <url>\n", os.Args[0])
+		fmt.Fprint(os.Stderr, parser.Usage(nil))
+		os.Exit(1)
+	}
+
 	// Validate URL
-	title, err := fetchTitle(*urlArg)
+	title, err := fetchTitle(url)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(2)
@@ -119,7 +142,7 @@ func main() {
 	// output md
 	var output string
 	if *markdown {
-		output = fmt.Sprintf("[%s](%s)", title, *urlArg)
+		output = fmt.Sprintf("[%s](%s)", title, url)
 	} else {
 		output = title
 	}

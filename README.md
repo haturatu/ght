@@ -27,16 +27,15 @@ which ght
 ## Usage
 URL in `$1`.
 ```bash
-$ ght
-[--url] is required
-usage: ght [-h|--help] --url "<value>" [-m|--markdown] [-c|--copy]
+$ ght --help
+usage: ght [-h|--help] [-u|--url "<value>"] [-m|--markdown] [-c|--copy]
 
            Get HTML Title
 
 Arguments:
 
   -h  --help      Print help information
-      --url       URL to fetch
+  -u  --url       URL to fetch
   -m  --markdown  Output in Markdown format
   -c  --copy      Copy to clipboard
 
