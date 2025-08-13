@@ -31,7 +31,5 @@ jobs:
       run: go test -v ./...
 
     - name: exec
-      run: |
-        go build -v
-        go run main.go https://www.google.com/
+      run: go run main.go https://www.google.com/
 
