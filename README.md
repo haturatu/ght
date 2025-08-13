@@ -1,10 +1,16 @@
 # ght
-go-http-title  
+get-http-title  
 
 ## Build
 Please check if the Go path is running.
 ```bash
 which go
+```
+
+requirements:
+```bash
+go get github.com/atotto/clipboard
+go get github.com/akamensky/argparse
 ```
   
 And then compile.
@@ -21,14 +27,30 @@ which ght
 ## Usage
 URL in `$1`.
 ```bash
-$ ght
-Usage: ght "https://google.com/"
+$ ght --help
+usage: ght [-h|--help] [-u|--url "<value>"] [-m|--markdown] [-c|--copy]
+
+           Get HTML Title
+
+Arguments:
+
+  -h  --help      Print help information
+  -u  --url       URL to fetch
+  -m  --markdown  Output in Markdown format
+  -c  --copy      Copy to clipboard
+
 ```
 exec
 ```bash
 $ ght "https://google.com/"
 Google
 ```
+Copy to clipboard
+```bash
+$ ght -mc "https://google.com/"
+[Google](https://google.com/)
+```
+
 Done!
 
 ### for example
