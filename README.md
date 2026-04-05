@@ -19,9 +19,37 @@ go build -o ght main.go
 ```
 Move the executable binary to `/usr/local/bin` to work with CLI.
 ```bash
+<<<<<<< Updated upstream
 sudo mv ght /usr/local/bin/
 sudo chown root:root /usr/local/bin/ght
 which ght
+=======
+make
+```
+
+## Install
+### AUR
+```bash
+yay -S ght-git
+```
+
+### If you want to install it manually,
+You can install it to `/usr/local/bin` with the following command.
+
+```bash
+sudo make install
+```
+
+## Uninstall
+### AUR
+```bash
+yay -Rns ght-git
+```
+
+### If you want to uninstall it manually,
+```bash
+sudo make uninstall
+>>>>>>> Stashed changes
 ```
 
 ## Usage
