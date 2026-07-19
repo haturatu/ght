@@ -1,0 +1,63 @@
+name: Update AUR package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aur:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ght
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute pkgver
+        id: pkgver
+        run: |
+          COUNT=$(git rev-list --count origin/main)
+          SHORT=$(git rev-parse --short=7 origin/main)
+          echo "pkgver=r${COUNT}.${SHORT}" >> "$GITHUB_OUTPUT"
+          echo "pkgver=r${COUNT}.${SHORT}"
+
+      - name: Install SSH key for AUR
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          known_hosts: aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrP0+ELbT3WXZj0j19w304hi94QucubImNCMP9P8
+
+      - name: Clone AUR repo and update
+        env:
+          PKGVER: ${{ steps.pkgver.outputs.pkgver }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions"
+          export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_ed25519 -o StrictHostKeyChecking=yes"
+          git clone ssh://aur@aur.archlinux.org/ght-git.git aur
+          cd aur
+
+          # rewrite pkgver in PKGBUILD
+          sed -i -E "s/^pkgver=.*/pkgver=${PKGVER}/" PKGBUILD
+
+          # regenerate .SRCINFO if makepkg is available
+          if command -v makepkg >/dev/null 2>&1; then
+            makepkg --printsrcinfo > .SRCINFO
+          else
+            # fallback: simple .SRCINFO pkgver rewrite
+            sed -i -E "s/^\tpkgver = .*/\tpkgver = ${PKGVER}/" .SRCINFO
+          fi
+
+          if git diff --quiet; then
+            echo "No changes; AUR package already up to date."
+            exit 0
+          fi
+
+          git add PKGBUILD .SRCINFO
+          git commit -m "upgpkg: ght-git ${PKGVER}"
+          git push origin main
