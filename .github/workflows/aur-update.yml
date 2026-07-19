@@ -30,7 +30,8 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          known_hosts: aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuBKrP0+ELbT3WXZj0j19w304hi94QucubImNCMP9P8
+          name: id_ed25519
+          known_hosts: aur.archlinux.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIRFzBCUItH9LZS0cKB5UE6ceAYhBD5C8GeOBip8Z11+4
 
       - name: Clone AUR repo and update
         env:
@@ -38,7 +39,7 @@ jobs:
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "github-actions"
-          export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_ed25519 -o StrictHostKeyChecking=yes"
+          export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i ${HOME}/.ssh/id_ed25519"
           git clone ssh://aur@aur.archlinux.org/ght-git.git aur
           cd aur
 
