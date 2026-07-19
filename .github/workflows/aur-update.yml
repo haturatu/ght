@@ -61,4 +61,4 @@ jobs:
 
           git add PKGBUILD .SRCINFO
           git commit -m "upgpkg: ght-git ${PKGVER}"
-          git push origin main
+          git push origin HEAD
