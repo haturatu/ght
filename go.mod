@@ -7,5 +7,5 @@ require golang.org/x/text v0.43.0 // indirect
 require (
 	github.com/akamensky/argparse v1.4.0
 	github.com/atotto/clipboard v0.1.4
-	golang.org/x/net v0.61.0
+	golang.org/x/net v0.62.0
 )
